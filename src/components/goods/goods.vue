@@ -1,9 +1,9 @@
 <template>
-  <div>I am goods</div>
+    <h2>I am goods</h2>
 </template>
 
 <script>
-  export default {}
+    export default {}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

@@ -1,11 +1,13 @@
-seller.vu<template>
-  <div>I am seller</div>
+<template>
+	<h2>I am seller</h2>
 </template>
 
 <script>
-  export default {}
+	export default {}
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
-
+<style scoped lang="stylus" rel="stylesheet/stylus">
+	h2
+		margin: 0 auto
+		font-size: 30px
 </style>
