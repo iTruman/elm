@@ -21,7 +21,7 @@ Vue.config.productionTip = false
 const routes = [
   {
     path: '/',
-    redirect: '/goods'
+    redirect: '/seller'
   },
   {
     path: '/goods',
