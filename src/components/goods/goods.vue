@@ -2,9 +2,9 @@
 	<div class="goods">
 		<div class="menu-wrapper" ref="menuWrapper">
 			<ul>
-				<li v-for="item in goods" class="menu-item">
+				<li v-for="(item, index) in goods" class="menu-item" :class="{'current':currentIndex === index}">
 					<span class="text border-1px">
-					 	<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{ item.name }}
+					 	<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{ item.name }}{{index}}{{currentIndex}}
 					</span>
 				</li>
 			</ul>
@@ -51,28 +51,48 @@
     	data() {
     		return {
     			goods: [],
-    			listHeight: []
+    			listHeight: [],
+    			scrollY: 0
+    		}
+    	},
+    	computed: {
+    		currentIndex() {
+    			for (let i = 0; i < this.listHeight.length; i++) {
+    				let height1 = this.listHeight[i];
+    				let height2 = this.listHeight[i + 1];
+    				if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+    					return i;
+    				}
+    			}
+    			return 0;
     		}
     	},
     	created() {
           	this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
     		this.$http.get('/api/goods').then((response) => {
-	            console.log(response.status);
+	            // console.log(response.status);
 	            response = response.body;   // json() 已经不返回object
 	            if (response.errno === ERR_OK){
 	                this.goods = response.data;
 	                this.$nextTick(() => {
-	                 	console.log(this);
+	                 	// console.log(this);
              			this._initScroll();
            			});
 	            }
-	        }, response => { console.log('error') })
+	        }, response => { console.log('error') });
     	},
     	methods: {
     		_initScroll() {
     			this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
 
-    			this.foodScroll = new BScroll(this.$refs.foodsWrapper, {});
+    			this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
+    				protoType: 3
+    			});
+    			this.foodScroll.on('scroll', (pos) => {
+    				if (pos.y <= 0) {
+    					this.scrollY = Math.abs(Math.round(pos.y));
+    				}
+    			});
     		},
     		_caculateHeight() {
     			let foodList = this.$refs.foodsWrapper.getElementByClassName('food-list-hook');
