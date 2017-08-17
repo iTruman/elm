@@ -12,15 +12,12 @@
                 <router-link to="/seller">商家</router-link>
             </div>
         </div>
-        <router-view>
-            <v-seller></v-seller>
-        </router-view>
+        <router-view :seller="seller"></router-view>
     </div>
 </template>
 
 <script>
     import header from './components/header/header.vue'
-    import seller from './components/seller/seller.vue'
 
     const ERR_OK = 0;
 
@@ -32,7 +29,7 @@
     },
     created () {
         this.$http.get('/api/seller').then((response) => {
-            console.log(response.status);
+            console.log('seller' + response.status);
             response = response.body;   // json() 已经不返回object
             if (response.errno === ERR_OK){
                 this.seller = response.data;
@@ -40,8 +37,7 @@
         }, response => { console.log('error') })
     },
     components: {
-        'v-header': header,
-        'v-seller': seller
+        'v-header': header
     }
 }
 

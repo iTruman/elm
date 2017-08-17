@@ -2,16 +2,16 @@
 	<div class="goods">
 		<div class="menu-wrapper" ref="menuWrapper">
 			<ul>
-				<li v-for="(item, index) in goods" class="menu-item" :class="{'current':currentIndex === index}">
+				<li v-for="(item, index) in goods" class="menu-item" :class="{'current':currentIndex === index}" @click="selectMenu( index, $event)">
 					<span class="text border-1px">
-					 	<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{ item.name }}{{index}}{{currentIndex}}
+					 	<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{ item.name }}
 					</span>
 				</li>
 			</ul>
 		</div>
 		<div class="foods-wrapper" ref="foodsWrapper">
 			<ul>
-				<li v-for="item in goods" class="food-list food-list-hook">
+				<li v-for="item in goods" class="food-list" ref="foodList">
 					<h1 class="title">{{ item.name }}</h1>
 					<ul>
 						<li v-for="food in item.foods" class="food-item border-1px">
@@ -35,12 +35,14 @@
 				</li>
 			</ul>
 		</div>
+		<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
 	</div>
 	
 </template>
 
 <script>
 	import BScroll from 'better-scroll';
+	import shopcart from 'components/shopcart/shopcart'
 	const ERR_OK = 0;
     export default {
     	props: {
@@ -70,23 +72,33 @@
     	created() {
           	this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
     		this.$http.get('/api/goods').then((response) => {
-	            // console.log(response.status);
+	            console.log('goods' + response.status);
 	            response = response.body;   // json() 已经不返回object
 	            if (response.errno === ERR_OK){
 	                this.goods = response.data;
 	                this.$nextTick(() => {
-	                 	// console.log(this);
              			this._initScroll();
+             			this._calculateHeight();
            			});
 	            }
 	        }, response => { console.log('error') });
     	},
     	methods: {
+    		selectMenu(index, event) {
+    			if (!event._constructed) {
+    				return;
+    			}
+    			let foodList = this.$refs.foodList;
+    			let el = foodList[index];
+    			this.foodScroll.scrollToElement(el, 300);
+    		},
     		_initScroll() {
-    			this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
+    			this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+    				click: true
+    			});
 
     			this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
-    				protoType: 3
+    				probeType: 3
     			});
     			this.foodScroll.on('scroll', (pos) => {
     				if (pos.y <= 0) {
@@ -94,29 +106,32 @@
     				}
     			});
     		},
-    		_caculateHeight() {
-    			let foodList = this.$refs.foodsWrapper.getElementByClassName('food-list-hook');
-    			let height = 0;
-    			this.listHeight.push(height);
-    			for (let i = 0; i < foodList.length; i++) {
-    				let item = foodList[i];
-    				height += item.clientHeight;
-    				this.listHeight.push(height);
-    			}
-    		}
+    		_calculateHeight() {
+		    	let foodList = this.$refs.foodList;
+		        let height = 0;
+		        this.listHeight.push(height);
+		        for (let i = 0; i < foodList.length; i++) {
+		          let item = foodList[i];
+		          height += item.clientHeight;
+		          this.listHeight.push(height);
+		        }
+		    }
+    	},
+    	components: {
+    		shopcart
     	}
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
- 	@import "../../common/stylus/mixin.styl"
+ @import "../../common/stylus/mixin.styl"
 
-  	.goods
-	    display: flex
-	    position: absolute
-	    top: 174px
-	    bottom: 46px
-	    width: 100%
-	    overflow: hidden
+.goods
+    display: flex
+    position: absolute
+    top: 174px
+    bottom: 46px
+    width: 100%
+    overflow: hidden
     .menu-wrapper
       	flex: 0 0 80px
       	width: 80px
@@ -196,7 +211,7 @@
 	                line-height: 12px
 	                margin-bottom: 8px
 	            .extra
-	              	&.count
+	              	.count
 	                    margin-right: 12px
 	            .price
 	                font-weight: 700
