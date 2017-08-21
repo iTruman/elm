@@ -30,6 +30,7 @@ module.exports = {
     'no-trailing-spaces': 0,
     'no-tabs': 0,
     'no-mixed-spaces-and-tabs': 0,
-    'no-unused-vars': 0
+    'no-unused-vars': 0,
+    'no-template-curly-in-string': 0
   }
 }

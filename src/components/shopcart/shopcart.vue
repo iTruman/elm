@@ -13,10 +13,19 @@
 				<div class="price" :class="{'highlight':totalPrice>0}">￥{{ totalPrice }}</div>
 				<div class="desc">另需配送费￥{{ deliveryPrice }}元</div>
 			</div>
-			<div class="content-right">
+			<div class="content-right" :class="{'highlight':totalPrice>0}">
 				<div class="pay">
 					{{ PayDesc }}
 				</div>
+			</div>
+		</div>
+		<div class="ball-container">
+			<div v-for="ball in balls">
+				<transition name="drop">
+					<div class="ball" v-show="ball.show">
+						<div class="inner inner-hook"></div>
+					</div>
+				</transition>
 			</div>
 		</div>
 	</div>
@@ -45,6 +54,28 @@
 				default: 0
 			}
 		},
+		data() {
+	    	return {
+	    		balls: [
+		    		{
+		    			show: false
+		    		},
+					{
+		    			show: false
+		    		},
+		    		{
+		    			show: false
+		    		},
+		    		{
+		    			show: false
+		    		},
+		    		{
+		    			show: false
+		    		}
+	    		],
+	    		dropBalls: []
+	    	}
+		},
 		computed: {
 			totalPrice() {
 				let total = 0;
@@ -70,6 +101,44 @@
 		    		return `去结算`;
 		    	}
 		    }
+		},
+		methods: {
+			drop(el) {
+				console.log(el)
+				for (var i = 0; i < this.balls.length; i++) {
+					let ball = this.balls[i];
+					if (!ball.show) {
+						ball.show = true;
+						ball.el = el;
+						this.dropBalls.push(ball);
+						return;
+					}
+				}
+			}
+		},
+		transition: {
+			beforeEnter(el) {
+				let count = this.balls.length;
+				while (count--){
+					let ball = this.balls[count];
+					if (ball.show) {
+						let rect = ball.el.getBoundingClientRect();
+						let x = rect.left - 32;
+						let y = -(window.innerHeight - rect.top - 22);
+						el.style.display = '';
+						el.style.webkitTransform = 'translate3d(0, ${y}px, 0)';
+						el.style.transform = 'translate3d(0, ${y}px, 0)';
+						let inner = el.getElementByClassName('inner-hook')[0];
+						inner.style.webkitTransform = 'translate3d(${x}px, 0, 0)';
+						inner.style.transform = 'translate3d(${x}px, 0, 0)';
+					}
+				}
+			},
+			enter(el) {
+			},
+			afterEnter(el) {
+
+			}
 		}
 	}
 </script>
@@ -150,10 +219,26 @@
 			.content-right
 				flex: 0 0 105px
 				background: #2b343c
+				&.highlight
+					background: rgb(0, 139, 69)
+					color: #FFF
 				.pay
 					height: 48px
 					line-height: 48px
 					text-align: center
 					font-size: 16px
 					font-weight: 700
+		.ball-container
+			.ball
+				position: fixed
+				left: 32px
+				bottom: 22px
+				z-index: 199 
+				transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
+				.inner
+					width: 16px
+					height: 16px
+					border-radius: 50%
+					background: rgb(0,160,220)
+					transition: all 0.4s linear
 </style>

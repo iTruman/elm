@@ -29,21 +29,27 @@
 									<span class="now">￥{{food.price}}</span>
 									<span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
 								</div>
+								<div class="cartcontrol-wrapper">
+									<cartcontrol :food="food" v-on:cartadd="_add"></cartcontrol>
+								</div>
 							</div>
 						</li>
 					</ul>
 				</li>
 			</ul>
 		</div>
-		<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+		<shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
 	</div>
 	
 </template>
 
 <script>
 	import BScroll from 'better-scroll';
-	import shopcart from 'components/shopcart/shopcart'
+	import shopcart from 'components/shopcart/shopcart';
+	import cartcontrol from 'components/cartcontrol/cartcontrol';
+
 	const ERR_OK = 0;
+    
     export default {
     	props: {
     		seller: {
@@ -67,6 +73,17 @@
     				}
     			}
     			return 0;
+    		},
+    		selectFoods() {
+    			let foods = [];
+    			this.goods.forEach((goods) => {
+    				goods.foods.forEach((food) => {
+    					if (food.count) {
+    						foods.push(food)
+    					}
+    				})
+    			});
+    			return foods;
     		}
     	},
     	created() {
@@ -98,6 +115,7 @@
     			});
 
     			this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
+    				click: true,
     				probeType: 3
     			});
     			this.foodScroll.on('scroll', (pos) => {
@@ -115,10 +133,16 @@
 		          height += item.clientHeight;
 		          this.listHeight.push(height);
 		        }
+		    },
+		    _add(target) {
+		    	this.$nextTick(() => {
+		    		this.$refs.shopcart.drop(event.target);
+		    	});
 		    }
     	},
     	components: {
-    		shopcart
+    		shopcart,
+    		cartcontrol
     	}
     }
 </script>
@@ -224,4 +248,8 @@
 	                    text-decoration: line-through
 	                    font-size: 10px
 	                    color: rgb(147, 153, 159)
+	            .cartcontrol-wrapper
+	            	position: absolute
+	            	right: 0
+	            	bottom: 12px
 </style>
