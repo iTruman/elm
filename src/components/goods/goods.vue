@@ -39,6 +39,7 @@
 			</ul>
 		</div>
 		<shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+		<food></food>
 	</div>
 	
 </template>
@@ -46,6 +47,7 @@
 <script>
 	import BScroll from 'better-scroll';
 	import shopcart from 'components/shopcart/shopcart';
+	import food from 'components/food/food';
 	import cartcontrol from 'components/cartcontrol/cartcontrol';
 
 	const ERR_OK = 0;
@@ -135,6 +137,7 @@
 		        }
 		    },
 		    _add(target) {
+		    	// 体验优化，异步执行下落动画
 		    	this.$nextTick(() => {
 		    		this.$refs.shopcart.drop(event.target);
 		    	});
@@ -142,6 +145,7 @@
     	},
     	components: {
     		shopcart,
+    		food,
     		cartcontrol
     	}
     }
@@ -200,8 +204,11 @@
 	          	font-size: 12px
     .foods-wrapper
         flex: 1
+        white-space: nowrap
+        text-overflow: ellipsis
+        overflow: hidden
         .title
-	        padding-left: 14px
+	        padding: 0 12px 0 14px
 	        height: 26px
 	        line-height: 26px
 	        border-left: 2px solid #d9dde1
@@ -225,7 +232,7 @@
 	              	margin: 2px 0 8px 0
 	              	height: 14px
 	              	line-height: 14px
-	              	font-size: 14px
+	              	font-size: 1em
 	              	color: rgb(7, 17, 27)
 	            .desc, .extra
 	              	line-height: 10px
