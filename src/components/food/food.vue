@@ -1,7 +1,7 @@
 <template>
 	<transition name="move">
-		<div class="food" v-show="showFlag">
-			<div class="food-wrapper">
+		<div>
+			<div class="food" v-show="showFlag">
 				<div class="icon">
 					<img :src="food.icon">
 				</div>
@@ -22,6 +22,7 @@
 					</div> -->
 				</div>
 			</div>
+			<div class="food-mask" v-show="showFlag" @click="showFlag"></div>
 		</div>
 	</transition>
 </template>
@@ -35,12 +36,12 @@
 		},
 		data() {
 			return {
-				showFlag: false
+				flag: false
 			}
 		},
 		methods: {
-			show() {
-				this.showFlag = true;
+			toggleShow() {
+				this.flag = !this.flag;
 			}
 		}
 	}
@@ -48,11 +49,13 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
 	.food
-		left: 0
-		top: 0
+		position: fixed
+		left: 10%
+		top: 20%
 		bottom: 0
-		z-index: 15
-		width: 100%
+		z-index: 16
+		width: 80%
+		height: 60%
 		background: rgba(7,17,27,.4)
         filter: blur(10px)
 		transform: translate3d(0, 0, 0)
@@ -60,9 +63,12 @@
 			transition: all .5s
 		&.move-enter,&.move-leave-active
 			transform: translate3d(100%, 0, 0)
-		.food-wrapper
-		    position: relative
-			top: 27%
-		    left: 25%
-		    background: #FFF
+	/*.food-mask
+		position: fixed
+		top: 0
+		left:0
+		bottom: 0
+		width: 100%
+		z-index: 15
+		background: rgba(7,17,27,.4)*/
 </style>
