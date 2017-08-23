@@ -1,6 +1,6 @@
 <template>
-	<transition name="move">
-		<div>
+	<div>
+		<transition name="move">
 			<div class="food" v-show="showFlag">
 				<div class="icon">
 					<img :src="food.icon">
@@ -22,9 +22,12 @@
 					</div> -->
 				</div>
 			</div>
-			<div class="food-mask" v-show="showFlag" @click="showFlag"></div>
-		</div>
-	</transition>
+		</transition>
+
+		<transition name="fade">
+			<div class="food-mask" v-show="showFlag" @click="hideFood"></div>
+		</transition>
+	</div>
 </template>
 
 <script>
@@ -36,12 +39,15 @@
 		},
 		data() {
 			return {
-				flag: false
+				showFlag: false
 			}
 		},
 		methods: {
-			toggleShow() {
-				this.flag = !this.flag;
+			show() {
+				this.showFlag = true;
+			},
+			hideFood() {
+				this.showFlag = false;
 			}
 		}
 	}
@@ -51,24 +57,31 @@
 	.food
 		position: fixed
 		left: 10%
-		top: 20%
+		top: 15%
 		bottom: 0
 		z-index: 16
 		width: 80%
 		height: 60%
-		background: rgba(7,17,27,.4)
-        filter: blur(10px)
+		border: 1px solid #CCC
+		background: #FFF
+		border-radius: 15px
+		box-shadow: 0 1px 0 1px rgba(7,17,27,.7)
 		transform: translate3d(0, 0, 0)
 		&.move-enter-active,&.move-leave-active
 			transition: all .5s
 		&.move-enter,&.move-leave-active
-			transform: translate3d(100%, 0, 0)
-	/*.food-mask
+			transform: translate3d(0, -120%, 0)
+	.food-mask
 		position: fixed
 		top: 0
 		left:0
 		bottom: 0
 		width: 100%
 		z-index: 15
-		background: rgba(7,17,27,.4)*/
+		background: rgba(7,17,27,.4)
+		opacity: 1
+		&.fade-enter-active, &.fade-leave-active
+			transition: all .5s
+		&.fade-enter, &.fade-leave-active
+			opacity: 0
 </style>
