@@ -22,8 +22,8 @@
 								<h2 class="name">{{ food.name }}</h2>
 								<p class="desc">{{ food.description }}</p>
 								<div class="extra">
-									<span>月售{{ food.sellCount}}</span>
-									<span>好评率{{ food.rating}}</span>
+									<span>月售{{ food.sellCount }}份</span>
+									<span>好评率{{ food.rating }}%</span>
 								</div>
 								<div class="price">
 									<span class="now">￥{{food.price}}</span>
@@ -40,8 +40,9 @@
 		</div>
 		
 		<shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
-		
+
 		<food :food="selectedFood" ref="food"></food>
+		<!-- <foodinfo :food="selectedFood" ref="foodinfo"></foodinfo> -->
 	</div>
 	
 </template>
@@ -49,6 +50,7 @@
 <script>
 	import BScroll from 'better-scroll';
 	import food from 'components/food/food';
+	// import foodinfo from 'components/foodinfo/foodinfo';
 	import shopcart from 'components/shopcart/shopcart';
 	import cartcontrol from 'components/cartcontrol/cartcontrol';
 
@@ -94,7 +96,6 @@
     	created() {
           	this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
     		this.$http.get('/api/goods').then((response) => {
-	            console.log('goods' + response.status);
 	            response = response.body;   // json() 已经不返回object
 	            if (response.errno === ERR_OK){
 	                this.goods = response.data;
@@ -145,6 +146,7 @@
 		    	}
 		    	this.selectedFood = food;
 		    	this.$refs.food.show();
+		    	// this.$refs.foodinfo.show();
 		    },
 		    _add(target) {
 		    	// 体验优化，异步执行下落动画
@@ -155,6 +157,7 @@
     	},
     	components: {
     		food,
+    		// foodinfo,
     		shopcart,
     		cartcontrol
     	}

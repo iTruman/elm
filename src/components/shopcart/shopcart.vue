@@ -154,7 +154,7 @@
 		},
 		methods: {
 			drop(el) {
-				console.log(el)
+				console.log('clk');
 				for (var i = 0; i < this.balls.length; i++) {
 					let ball = this.balls[i];
 					if (!ball.show) {
@@ -164,6 +164,7 @@
 						return;
 					}
 				}
+				console.log('click');
 			},
 			beforeEnter(el) {
 				let count = this.balls.length;

@@ -29,7 +29,6 @@
     },
     created () {
         this.$http.get('/api/seller').then((response) => {
-            console.log('seller' + response.status);
             response = response.body;   // json() 已经不返回object
             if (response.errno === ERR_OK){
                 this.seller = response.data;
